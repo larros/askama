@@ -5,6 +5,7 @@ extern crate quote;
 extern crate syn;
 
 use proc_macro::TokenStream;
+use iron::modifiers::*;
 
 #[proc_macro_derive(WriteBody)]
 pub fn derive_writebody(input: TokenStream) -> TokenStream {
@@ -19,5 +20,6 @@ pub fn derive_writebody(input: TokenStream) -> TokenStream {
             }
         }
     };
+    eprintln!("{}", tokens.as_str());
     tokens.as_str().parse().unwrap()
 }

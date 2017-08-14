@@ -16,5 +16,5 @@ struct HelloTemplate<'a> {
 
 #[test]
 fn test_iron() {
-    let rsp = Response::with((status::Ok, HelloTemplate { name: "world" }));
+    let rsp = Response::with((status::Ok, Box::new(HelloTemplate { name: "world" })));
 }
