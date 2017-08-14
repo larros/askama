@@ -5,7 +5,6 @@ extern crate quote;
 extern crate syn;
 
 use proc_macro::TokenStream;
-use iron::modifiers::*;
 
 #[proc_macro_derive(WriteBody)]
 pub fn derive_writebody(input: TokenStream) -> TokenStream {
