@@ -5,8 +5,12 @@ authors = ["Dirkjan Ochtman <dirkjan@ochtman.nl>"]
 workspace = ".."
 build = "build.rs"
 
+[features]
+airon = ["iron"]
+
 [dependencies]
 askama = { path = "../askama", version = "*" }
+iron = { version = "0.5", optional = true }
 
 [build-dependencies]
 askama = { path = "../askama", version = "*" }

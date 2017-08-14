@@ -1,0 +1,14 @@
+[package]
+name = "askama_iron"
+version = "0.1.0"
+authors = ["Dirkjan Ochtman <dirkjan@ochtman.nl>"]
+workspace = ".."
+
+[lib]
+proc-macro = true
+
+[dependencies]
+askama = "0.3"
+syn = "0.11"
+quote = "0.3"
+iron = "0.5"

@@ -15,6 +15,10 @@ readme = "../README.md"
 [badges]
 travis-ci = { repository = "djc/askama" }
 
+[features]
+iron = ["askama_iron"]
+
 [dependencies]
 askama_derive = { path = "../askama_derive", version = "0.3.4" }
 error-chain = "0.10"
+askama_iron = { path = "../askama_iron", version = "0.1", optional = true }

@@ -215,6 +215,9 @@
 extern crate askama_derive;
 #[macro_use]
 extern crate error_chain;
+#[cfg(feature = "iron")]
+#[macro_use]
+extern crate askama_iron;
 
 use std::env;
 use std::fmt;
@@ -237,6 +240,9 @@ pub trait Template {
 pub mod filters;
 pub use askama_derive::*;
 pub use errors::Result;
+
+#[cfg(feature = "iron")]
+pub use askama_iron::*;
 
 // Duplicates askama_derive::path::template_dir()
 fn template_dir() -> PathBuf {
