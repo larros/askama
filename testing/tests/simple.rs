@@ -7,7 +7,7 @@ use askama::Template;
 use serde_json::Value;
 
 #[derive(Template)]
-#[template(path = "simple.html")]
+#[template(path = "simple.html", print = "code")]
 struct VariablesTemplate<'a> {
     strvar: &'a str,
     num: i64,

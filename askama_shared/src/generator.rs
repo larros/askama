@@ -353,9 +353,11 @@ impl<'a> Generator<'a> {
 
     fn write_expr(&mut self, ws: &WS, s: &Expr) {
         self.handle_ws(ws);
-        self.write("writer.write_fmt(format_args!(\"{}\", ");
+        self.write("let askama_expr = &");
         self.visit_expr(s);
-        self.writeln("))?;");
+        self.writeln(";");
+        self.writeln("writer.write_fmt(format_args!(\"{}\", \
+                      &::askama::MarkupDisplay::from(askama_expr)))?;");
     }
 
     fn write_call(&mut self, ws: &WS, name: &str, args: &[Expr]) {

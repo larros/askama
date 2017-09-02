@@ -13,11 +13,21 @@ pub use self::json::json;
 
 use std::fmt;
 
-use super::Result;
+use super::{MarkupDisplay, Result};
 
 
 fn escapable(b: &u8) -> bool {
     *b == b'<' || *b == b'>' || *b == b'&'
+}
+
+pub fn safe<'a, D, I>(v: &'a I) -> Result<MarkupDisplay<'a, D>>
+where
+    D: fmt::Display,
+    MarkupDisplay<'a, D>: From<&'a I>
+{
+    let mut res: MarkupDisplay<'a, D> = v.into();
+    res.mark_safe();
+    Ok(res)
 }
 
 /// Escapes `&`, `<` and `>` in strings
