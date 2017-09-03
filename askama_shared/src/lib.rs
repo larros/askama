@@ -1,3 +1,5 @@
+#![feature(test)]
+
 #[macro_use]
 extern crate error_chain;
 #[macro_use]
@@ -9,6 +11,7 @@ extern crate syn;
 extern crate serde;
 #[cfg(feature = "serde-json")]
 extern crate serde_json;
+extern crate test;
 
 pub use errors::{Error, Result};
 pub mod filters;

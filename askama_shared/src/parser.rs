@@ -208,7 +208,13 @@ named!(filter<(&str, Option<Vec<Expr>>)>, do_parse!(
     (fname, args)
 ));
 
+fn debug(input: &[u8]) -> IResult<&[u8], &str> {
+    println!("expr_filtered called with: {:?}", str::from_utf8(input).unwrap());
+    return IResult::Error(nom::ErrorKind::Custom(0));
+}
+
 named!(expr_filtered<Expr>, do_parse!(
+    opt!(debug) >> // Comment out this line when running benchmarks
     obj: expr_attr >>
     filters: many0!(filter) >>
     ({
@@ -444,6 +450,8 @@ pub fn parse(src: &str) -> Vec<Node> {
 
 #[cfg(test)]
 mod tests {
+    use test::Bencher;
+
     fn check_ws_split(s: &str, res: &(&str, &str, &str)) {
         let node = super::split_ws_parts(s.as_bytes());
         match node {
@@ -467,5 +475,30 @@ mod tests {
     #[should_panic]
     fn test_invalid_block() {
         super::parse("{% extend \"blah\" %}");
+    }
+
+    #[test]
+    fn test_expr_any() {
+        super::expr_any("expr(any)}}".as_bytes());
+    }
+
+    #[test]
+    fn test_expr_muldivmod() {
+        super::expr_muldivmod("expr(mutltdivmod)}}".as_bytes());
+    }
+
+    #[bench]
+    fn bench_expr_muldivmod(b: &mut Bencher) {
+        b.iter(|| super::expr_muldivmod("a.b(d)}}".as_bytes()));
+    }
+
+    #[bench]
+    fn bench_expr_any(b: &mut Bencher) {
+        b.iter(|| super::expr_any("a.b(d)}}".as_bytes()));
+    }
+
+    #[bench]
+    fn bench_expr_bxor(b: &mut Bencher) {
+        b.iter(|| super::expr_bxor("a.b(d)}}".as_bytes()));
     }
 }
