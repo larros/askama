@@ -4,15 +4,15 @@ extern crate askama;
 use askama::Template;
 
 #[derive(Template)]
-#[template(source = "{% let v = s %}{{ v }}", ext = "txt")]
+#[template(source = "{% let (a, b) = s %}{{ a }}{{ b }}{{ s.0 }}{{ s.1}}", ext = "txt")]
 struct LetTemplate<'a> {
-    s: &'a str,
+    s: (&'a str, &'a str),
 }
 
 #[test]
 fn test_let() {
-    let t = LetTemplate { s: "foo" };
-    assert_eq!(t.render().unwrap(), "foo");
+    let t = LetTemplate { s: ("foo", "bar") };
+    assert_eq!(t.render().unwrap(), "foobarfoobar");
 }
 
 

@@ -106,7 +106,7 @@ fn take_content(i: &[u8]) -> IResult<&[u8], Node> {
 }
 
 fn identifier(input: &[u8]) -> IResult<&[u8], &str> {
-    if !nom::is_alphabetic(input[0]) && input[0] != b'_' {
+    if !nom::is_alphanumeric(input[0]) && input[0] != b'_' {
         return IResult::Error(nom::ErrorKind::Custom(0));
     }
     for (i, ch) in input.iter().enumerate() {
@@ -138,7 +138,19 @@ named!(target_single<Target>, map!(identifier,
 
 named!(target_group<Target>, do_parse!(
     tag_s!("(") >>
-    args: many0!(identifier) >>
+    args: do_parse!(
+        arg0: ws!(identifier) >>
+        args: many0!(do_parse!(
+            tag_s!(",") >>
+            argn: ws!(identifier) >>
+            (argn)
+        )) >>
+        ({
+           let mut res = vec![arg0];
+           res.extend(args);
+           res
+        })
+    ) >>
     tag_s!(")") >>
     (Target::Names(args))
 ));
