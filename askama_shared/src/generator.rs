@@ -471,6 +471,7 @@ impl<'a> Generator<'a> {
                 self.locals.insert(name);
                 self.write(name);
             },
+            Target::Names(..) => panic!("Not supported with tuples in let decl"),
         }
         self.writeln(";");
     }
@@ -484,6 +485,17 @@ impl<'a> Generator<'a> {
                     self.locals.insert(name);
                 }
                 self.write(name);
+            },
+            Target::Names(ref names) => {
+                self.write("let ");
+                for name in names {
+                    if !self.locals.contains(name) {
+                        self.locals.insert(name);
+                    }
+                }
+                self.write("(");
+                self.write(names.join(", ").as_str());
+                self.write(")");
             },
         }
         self.write(" = ");
@@ -676,9 +688,14 @@ impl<'a> Generator<'a> {
         vec![name]
     }
 
+    fn visit_target_group<'t>(&mut self, names: &'t Vec<&'t str>) -> Vec<&'t str> {
+        names.clone()
+    }
+
     fn visit_target<'t>(&mut self, target: &'t Target) -> Vec<&'t str> {
         match *target {
             Target::Name(s) => { self.visit_target_single(s) },
+            Target::Names(ref names) => { self.visit_target_group(names) },
         }
     }
 

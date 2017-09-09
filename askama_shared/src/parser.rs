@@ -16,6 +16,7 @@ pub enum Expr<'a> {
 #[derive(Debug)]
 pub enum Target<'a> {
     Name(&'a str),
+    Names(Vec<&'a str>),
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -133,6 +134,18 @@ named!(expr_var<Expr>, map!(identifier,
 
 named!(target_single<Target>, map!(identifier,
     |s| Target::Name(s)
+));
+
+named!(target_group<Target>, do_parse!(
+    tag_s!("(") >>
+    args: many0!(identifier) >>
+    tag_s!(")") >>
+    (Target::Names(args))
+));
+
+named!(target<Target>, alt!(
+    target_single |
+    target_group
 ));
 
 named!(arguments<Vec<Expr>>, do_parse!(
@@ -318,7 +331,7 @@ named!(block_if<Node>, do_parse!(
 named!(block_let<Node>, do_parse!(
     pws: opt!(tag_s!("-")) >>
     ws!(tag_s!("let")) >>
-    var: ws!(target_single) >>
+    var: ws!(target) >>
     val: opt!(do_parse!(
         ws!(tag_s!("=")) >>
         val: ws!(expr_any) >>
@@ -335,7 +348,7 @@ named!(block_let<Node>, do_parse!(
 named!(block_for<Node>, do_parse!(
     pws1: opt!(tag_s!("-")) >>
     ws!(tag_s!("for")) >>
-    var: ws!(target_single) >>
+    var: ws!(target) >>
     ws!(tag_s!("in")) >>
     iter: ws!(expr_any) >>
     nws1: opt!(tag_s!("-")) >>
